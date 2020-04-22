@@ -30,19 +30,13 @@ class ShoppingCart
   def build_discount(offer, unit_price, p, quantity)
     case offer.offer_type
     when SpecialOfferType::THREE_FOR_TWO
-      x = 3
-      y = 2
-      discount = build_x_for_y_discount(unit_price, p, quantity, x, y)
+      build_x_for_y_discount(unit_price, p, quantity, 3, 2)
     when SpecialOfferType::TWO_FOR_AMOUNT
-      x = 2
-      y = offer.argument
-      discount = build_x_for_y_discount(unit_price, p, quantity, x, y)
+      build_x_for_y_discount(unit_price, p, quantity, 2, offer.argument)
     when SpecialOfferType::FIVE_FOR_AMOUNT
-      x = 5
-      y = offer.argument
-      discount = build_x_for_y_discount(unit_price, p, quantity, x, y)
+      build_x_for_y_discount(unit_price, p, quantity, 5, offer.argument)
     when SpecialOfferType::TEN_PERCENT_DISCOUNT
-      discount = Discount.new(
+      Discount.new(
         p,
         offer.argument.to_s + '% off',
         quantity * unit_price * offer.argument / 100.0
