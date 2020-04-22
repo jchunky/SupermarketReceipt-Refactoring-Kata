@@ -1,5 +1,2 @@
-Product = Struct.new(:name, :unit) do
-
-  undef :name=, :unit=
-
+class Product < Struct.new(:name, :unit)
 end
