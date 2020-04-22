@@ -10,16 +10,20 @@ class Teller
 
   def checks_out_articles_from(the_cart)
     receipt = Receipt.new
-    product_quantities = the_cart.items
-    product_quantities.each do |product_quantity|
-      product = product_quantity.product
-      quantity = product_quantity.quantity
-      unit_price = @catalog.unit_price(product)
-      price = quantity * unit_price
-      receipt.add_product(product, quantity, unit_price, price)
+    the_cart.items.each do |product_quantity|
+      receipt.add_receipt_item(create_receipt_item(product_quantity))
     end
     the_cart.handle_offers(receipt, @offers, @catalog)
-
     receipt
+  end
+
+  private
+
+  def create_receipt_item(product_quantity)
+    product = product_quantity.product
+    quantity = product_quantity.quantity
+    unit_price = @catalog.unit_price(product)
+    total_price = quantity * unit_price
+    ReceiptItem.new(product, quantity, unit_price, total_price)
   end
 end
