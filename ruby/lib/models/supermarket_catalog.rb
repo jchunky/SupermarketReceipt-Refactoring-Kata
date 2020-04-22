@@ -7,7 +7,7 @@ class SupermarketCatalog
     @prices[product.name] = price
   end
 
-  def unit_price(p)
-    @prices.fetch(p.name)
+  def unit_price(product)
+    @prices.fetch(product.name)
   end
 end
