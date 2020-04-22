@@ -5,14 +5,11 @@ class ReceiptPrinter
 
   def print_receipt(receipt)
     result = ''
-    receipt.items.each do |item|
-      result << format_receipt_item(item)
-    end
-    receipt.discounts.each do |discount|
-      result << format_discount(discount)
-    end
+    result << receipt.items.map(&method(:format_receipt_item)).join
+    result << receipt.discounts.map(&method(:format_discount)).join
     result << "\n"
-    result << format('Total: %33.2f', receipt.total_price)
+    result << 'Total:'.ljust(@columns - 10)
+    result << cash(receipt.total_price).rjust(10)
     result
   end
 
@@ -25,7 +22,9 @@ class ReceiptPrinter
     name = item.product.name
     unit_price = cash(item.price)
 
-    result << name.ljust(30) + price.rjust(10) + "\n"
+    result << name.ljust(@columns - 10)
+    result << price.rjust(10)
+    result << "\n"
     result << "  #{unit_price} * #{quantity}\n" if item.quantity != 1
     result
   end
@@ -36,7 +35,7 @@ class ReceiptPrinter
     price_presentation = cash(discount.discount_amount)
     description = discount.description
 
-    result << "#{description}(#{product_presentation})".ljust(30)
+    result << "#{description}(#{product_presentation})".ljust(@columns - 10)
     result << "-#{price_presentation}".rjust(10)
     result << "\n"
     result
