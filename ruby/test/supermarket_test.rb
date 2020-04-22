@@ -2,7 +2,7 @@ require_relative './test_helper'
 
 class SupermarketTest < Minitest::Test
   def test_ten_percent_discount
-    catalog = FakeCatalog.new
+    catalog = SupermarketCatalog.new
     toothbrush = Product.new('toothbrush', ProductUnit::EACH)
     catalog.add_product(toothbrush, 0.99)
 
