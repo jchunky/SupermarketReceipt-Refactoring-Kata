@@ -4,52 +4,48 @@ class ReceiptPrinter
   end
 
   def print_receipt(receipt)
-    result = ''
-    receipt.items.each do |item|
-      price = format_price(item.total_price)
-      quantity = format_quantity(item)
-      product = item.product.name
-      unit_price = format_price(item.price)
-
-      whitespace_size = @columns - product.size - price.size
-      line = product
-      line += whitespace(whitespace_size) + price + "\n"
-      line += '  ' + unit_price + ' * ' + quantity + "\n" if item.quantity != 1
-
-      result << line
-    end
-    receipt.discounts.each do |discount|
-      product = discount.product.name
-      price = format_price(discount.discount_amount)
-      description = discount.description
-
-      result << description + '(' + product + ')'
-      result << whitespace(@columns - 3 - product.size - description.size - price.size)
-      result << '-' + price
-
-      result << "\n"
-    end
-    result << "\n"
-    price = format_price(receipt.total_price.to_f)
-
-    result << 'Total: '
-    result << whitespace(@columns - 'Total: '.size - price.size)
-    result << price
-
-    result
+    [
+      receipt.items.map(&method(:format_receipt_item)),
+      receipt.discounts.map(&method(:format_discount)),
+      "\n",
+      format_line('Total: ', format_price(receipt.total_price.to_f))
+    ].join
   end
 
   private
 
+  def format_receipt_item(item)
+    price = format_price(item.total_price)
+    quantity = format_quantity(item)
+    product = item.product.name
+    unit_price = format_price(item.price)
+
+    [
+      format_line(product, price) + "\n",
+      ("  #{unit_price} * #{quantity}\n" if item.quantity != 1)
+    ].compact.join
+  end
+
+  def format_discount(discount)
+    product = discount.product.name
+    price = format_price(discount.discount_amount)
+    description = discount.description
+    format_line("#{description}(#{product})", "-#{price}") + "\n"
+  end
+
+  def format_line(left, right)
+    left.ljust(@columns - right.size) + right
+  end
+
   def format_price(price)
-    '%.2f' % price
+    format('%.2f', price)
   end
 
   def format_quantity(item)
     if ProductUnit::EACH == item.product.unit
-      '%x' % item.quantity.to_i
+      format('%x', item.quantity.to_i)
     else
-      '%.3f' % item.quantity
+      format('%.3f', item.quantity)
     end
   end
 
