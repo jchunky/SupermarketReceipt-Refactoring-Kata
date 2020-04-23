@@ -33,20 +33,18 @@ class ShoppingCart
 
   def generate_discount(product, quantity, offer, unit_price)
     case offer.offer_type
-    when THREE_FOR_TWO
-      generate_x_for_y_discount(product, quantity, unit_price, 3, 2)
-    when TWO_FOR_AMOUNT
-      amount = offer.argument
-      generate_x_for_amount_discount(product, quantity, unit_price, 2, amount)
-    when FIVE_FOR_AMOUNT
-      amount = offer.argument
-      generate_x_for_amount_discount(product, quantity, unit_price, 5, amount)
-    when TEN_PERCENT_DISCOUNT
+    when X_FOR_Y
+      generate_x_for_y_discount(product, quantity, offer, unit_price)
+    when X_FOR_AMOUNT
+      generate_x_for_amount_discount(product, quantity, offer, unit_price)
+    when PERCENT_DISCOUNT
       generate_percentage_discount(product, quantity, offer, unit_price)
     end
   end
 
-  def generate_x_for_y_discount(product, quantity, unit_price, x, y)
+  def generate_x_for_y_discount(product, quantity, offer, unit_price)
+    x = offer.argument[:x]
+    y = offer.argument[:y]
     return if quantity < x
 
     quantity_as_int = quantity.to_i
@@ -56,7 +54,9 @@ class ShoppingCart
     Discount.new(product, "#{x} for #{y}", discount_amount)
   end
 
-  def generate_x_for_amount_discount(product, quantity, unit_price, x, amount)
+  def generate_x_for_amount_discount(product, quantity, offer, unit_price)
+    x = offer.argument[:x]
+    amount = offer.argument[:amount]
     return if quantity < x
 
     quantity_as_int = quantity.to_i
@@ -67,8 +67,8 @@ class ShoppingCart
   end
 
   def generate_percentage_discount(product, quantity, offer, unit_price)
-    percentage = offer.argument
-    discount_amount = quantity * unit_price * offer.argument / 100.0
-    Discount.new(product, "#{percentage}% off", discount_amount)
+    percent = offer.argument[:percent]
+    discount_amount = quantity * unit_price * percent / 100
+    Discount.new(product, "#{percent}% off", discount_amount)
   end
 end

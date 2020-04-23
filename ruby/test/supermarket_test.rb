@@ -11,27 +11,27 @@ class SupermarketTest < Minitest::Test
 
     toothbrush = Product.new('toothbrush', ProductUnit::EACH)
     catalog.add_product(toothbrush, 0.99)
-    teller.add_special_offer(THREE_FOR_TWO, toothbrush, nil)
+    teller.add_special_offer(X_FOR_Y, toothbrush, x: 3, y: 2)
     cart.add_item_quantity(toothbrush, 4)
 
     apples = Product.new('apples', ProductUnit::KILO)
     catalog.add_product(apples, 1.99)
-    teller.add_special_offer(TEN_PERCENT_DISCOUNT, apples, 20.0)
+    teller.add_special_offer(PERCENT_DISCOUNT, apples, percent: 20.0)
     cart.add_item_quantity(apples, 2.5)
 
     rice = Product.new('rice', ProductUnit::EACH)
     catalog.add_product(rice, 2.49)
-    teller.add_special_offer(TEN_PERCENT_DISCOUNT, rice, 10.0)
+    teller.add_special_offer(PERCENT_DISCOUNT, rice, percent: 10.0)
     cart.add_item_quantity(rice, 2)
 
     tooth_paste = Product.new('tooth paste', ProductUnit::EACH)
     catalog.add_product(tooth_paste, 1.79)
-    teller.add_special_offer(FIVE_FOR_AMOUNT, tooth_paste, 7.49)
+    teller.add_special_offer(X_FOR_AMOUNT, tooth_paste, x: 5, amount: 7.49)
     cart.add_item_quantity(tooth_paste, 6)
 
     bread = Product.new('bread', ProductUnit::EACH)
     catalog.add_product(bread, 0.99)
-    teller.add_special_offer(TWO_FOR_AMOUNT, bread, 1.50)
+    teller.add_special_offer(X_FOR_AMOUNT, bread, x: 2, amount: 1.50)
     cart.add_item_quantity(bread, 5)
 
     cherry_tomatoes = Product.new('cherry tomatoes', ProductUnit::EACH)
