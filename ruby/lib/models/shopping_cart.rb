@@ -33,25 +33,19 @@ class ShoppingCart
 
   def generate_discount(product, quantity, offer, unit_price)
     case offer.offer_type
-    when X_FOR_Y
-      generate_x_for_y_discount(product, quantity, offer, unit_price)
-    when X_FOR_AMOUNT
-      generate_x_for_amount_discount(product, quantity, offer, unit_price)
     when PERCENT_DISCOUNT
       generate_percentage_discount(product, quantity, offer, unit_price)
+    when X_FOR_AMOUNT
+      generate_x_for_amount_discount(product, quantity, offer, unit_price)
+    when X_FOR_Y
+      generate_x_for_y_discount(product, quantity, offer, unit_price)
     end
   end
 
-  def generate_x_for_y_discount(product, quantity, offer, unit_price)
-    x = offer.argument[:x]
-    y = offer.argument[:y]
-    return if quantity < x
-
-    quantity_as_int = quantity.to_i
-    number_of_x = quantity_as_int / x
-    total = (number_of_x * y * unit_price) + quantity_as_int % x * unit_price
-    discount_amount = quantity * unit_price - total
-    Discount.new(product, "#{x} for #{y}", discount_amount)
+  def generate_percentage_discount(product, quantity, offer, unit_price)
+    percent = offer.argument[:percent]
+    discount_amount = quantity * unit_price * percent / 100
+    Discount.new(product, "#{percent}% off", discount_amount)
   end
 
   def generate_x_for_amount_discount(product, quantity, offer, unit_price)
@@ -66,9 +60,15 @@ class ShoppingCart
     Discount.new(product, "#{x} for #{amount}", discount_amount)
   end
 
-  def generate_percentage_discount(product, quantity, offer, unit_price)
-    percent = offer.argument[:percent]
-    discount_amount = quantity * unit_price * percent / 100
-    Discount.new(product, "#{percent}% off", discount_amount)
+  def generate_x_for_y_discount(product, quantity, offer, unit_price)
+    x = offer.argument[:x]
+    y = offer.argument[:y]
+    return if quantity < x
+
+    quantity_as_int = quantity.to_i
+    number_of_x = quantity_as_int / x
+    total = (number_of_x * y * unit_price) + quantity_as_int % x * unit_price
+    discount_amount = quantity * unit_price - total
+    Discount.new(product, "#{x} for #{y}", discount_amount)
   end
 end
