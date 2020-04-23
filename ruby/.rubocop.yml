@@ -72,6 +72,8 @@ Style/Documentation:
   Enabled: false
 Style/EmptyCaseCondition:
   Enabled: false
+Style/FormatString:
+  Enabled: false
 Style/FormatStringToken:
   Enabled: false
 Style/FrozenStringLiteralComment:
