@@ -17,11 +17,11 @@ def print_line(character)
 end
 
 watch(/.*\.rb/) do |match|
-  print_line('=')
+  print_line("=")
   path = match[0]
   puts "Processing file: #{path}..."
   system "rubocop --auto-correct #{path}"
-  print_line('-')
-  system 'ruby test/*_test.rb'
-  puts 'Done.'
+  print_line("-")
+  system "ruby test/*_test.rb"
+  puts "Done."
 end
