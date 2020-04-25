@@ -1,4 +1,5 @@
 class Receipt
+  attr_reader :items, :discounts
 
   def initialize
     @items = []
@@ -6,32 +7,14 @@ class Receipt
   end
 
   def total_price
-    total = 0.0
-    for item in @items do
-      total += item.total_price
-    end
-    for discount in @discounts do
-      total -= discount.discount_amount
-    end
-    total
+    items.sum(&:total_price) - discounts.sum(&:discount_amount)
   end
 
-  def add_product(product, quantity, price, total_price)
-    @items << ReceiptItem.new(product, quantity, price, total_price)
-    nil
-  end
-
-  def items
-    Array.new @items
+  def add_product(receipt_item)
+    items << receipt_item
   end
 
   def add_discount(discount)
-    @discounts << discount
-    nil
+    discounts << discount
   end
-
-  def discounts
-    Array.new @discounts
-  end
-
 end
