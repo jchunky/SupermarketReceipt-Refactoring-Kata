@@ -32,6 +32,8 @@ Layout/EndAlignment:
 Layout/LineLength:
   Enabled: true
   AutoCorrect: true
+Style/FormatString:
+  AutoCorrect: true
 
 # Indentation
 Layout/BlockAlignment:

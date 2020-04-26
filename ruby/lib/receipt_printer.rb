@@ -20,7 +20,7 @@ class ReceiptPrinter
     name = item.product.name
     unit_price = format_price(item.price)
     result = format_line(name, price) + "\n"
-    result << "  " + unit_price + " * " + quantity + "\n" if item.quantity != 1
+    result << "  #{unit_price} * #{quantity}\n" if item.quantity != 1
     result
   end
 
