@@ -54,6 +54,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    rdoc (6.2.1)
     rexml (3.2.4)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
@@ -77,6 +78,8 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
     ruby-progressbar (1.10.1)
+    sdoc (1.1.0)
+      rdoc (>= 5.0)
     shellany (0.0.1)
     test-unit (3.3.5)
       power_assert
@@ -85,6 +88,8 @@ GEM
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
+    whats_up (1.2.2)
+      sdoc
     zeitwerk (2.3.0)
 
 PLATFORMS
@@ -99,6 +104,7 @@ DEPENDENCIES
   rspec
   rubocop
   test-unit
+  whats_up
 
 BUNDLED WITH
    2.1.4
