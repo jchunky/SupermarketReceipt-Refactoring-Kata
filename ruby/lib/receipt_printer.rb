@@ -36,14 +36,14 @@ class ReceiptPrinter
   end
 
   def format_price(price)
-    "%.2f" % price
+    format("%.2f", price)
   end
 
   def format_quantity(item)
     if ProductUnit::EACH == item.product.unit
-      "%x" % item.quantity.to_i
+      format("%x", item.quantity.to_i)
     else
-      "%.3f" % item.quantity
+      format("%.3f", item.quantity)
     end
   end
 end
