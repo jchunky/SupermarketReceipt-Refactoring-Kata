@@ -29,53 +29,46 @@ class ShoppingCart
     quantity = product_quantities[p]
     offer = offers[p]
     unit_price = catalog.unit_price(p)
-    quantity_as_int = quantity.to_i
 
     case offer.offer_type
     when SpecialOfferType::THREE_FOR_TWO
-      x = 3
-      y = 2
-      x_for_y_discount(quantity, unit_price, x: 3, y: 2)
-      if quantity >= x
-        number_of_x = quantity_as_int / x
-        total = (number_of_x * y * unit_price) + quantity_as_int % x * unit_price
-        discount_amount = quantity * unit_price - total
-        Discount.new(p, "#{x} for #{y}", discount_amount)
-      end
+      x_for_y_discount(p, quantity, unit_price, x: 3, y: 2)
     when SpecialOfferType::TEN_PERCENT_DISCOUNT
       percent = offer.argument
-      discount = quantity * unit_price * percent / 100.0
-      Discount.new(p, "#{percent}% off", discount)
+      percent_discount(p, quantity, unit_price, percent: percent)
     when SpecialOfferType::TWO_FOR_AMOUNT
-      x = 2
       amount = offer.argument
-      if quantity >= x
-        number_of_x = quantity_as_int / x
-        total = amount * number_of_x + quantity_as_int % x * unit_price
-        discount = unit_price * quantity - total
-        Discount.new(p, "#{x} for #{amount}", discount)
-      end
+      x_for_amount_discount(p, quantity, unit_price, x: 2, amount: amount)
     when SpecialOfferType::FIVE_FOR_AMOUNT
-      x = 5
       amount = offer.argument
-      if quantity >= x
-        number_of_x = quantity_as_int / x
-        total = amount * number_of_x + quantity_as_int % x * unit_price
-        discount = unit_price * quantity - total
-        Discount.new(p, "#{x} for #{amount}", discount)
-      end
+      x_for_amount_discount(p, quantity, unit_price, x: 5, amount: amount)
     else
       raise "Unexpected SpecialOfferType: #{offer.offer_type}"
     end
   end
 
-  def x_for_y_discount(quantity, unit_price, x:, y:)
+  def x_for_y_discount(p, quantity, unit_price, x:, y:)
     quantity_as_int = quantity.to_i
     if quantity >= x
       number_of_x = quantity_as_int / x
       total = (number_of_x * y * unit_price) + quantity_as_int % x * unit_price
       discount_amount = quantity * unit_price - total
       Discount.new(p, "#{x} for #{y}", discount_amount)
+    end
+  end
+
+  def percent_discount(p, quantity, unit_price, percent:)
+    discount = quantity * unit_price * percent / 100.0
+    Discount.new(p, "#{percent}% off", discount)
+  end
+
+  def x_for_amount_discount(p, quantity, unit_price, x:, amount:)
+    quantity_as_int = quantity.to_i
+    if quantity >= x
+      number_of_x = quantity_as_int / x
+      total = amount * number_of_x + quantity_as_int % x * unit_price
+      discount = unit_price * quantity - total
+      Discount.new(p, "#{x} for #{amount}", discount)
     end
   end
 end
