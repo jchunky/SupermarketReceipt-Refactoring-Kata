@@ -8,19 +8,27 @@ class Teller
     @offers[product] = Offer.new(offer_type, product, argument)
   end
 
-  def checks_out_articles_from(the_cart)
-    receipt = Receipt.new
-    product_quantities = the_cart.items
-    product_quantities.each do |pq|
-      p = pq.product
-      quantity = pq.quantity
-      unit_price = @catalog.unit_price(p)
-      price = quantity * unit_price
-      receipt_item = ReceiptItem.new(p, quantity, unit_price, price)
-      receipt.add_product(receipt_item)
-    end
-    the_cart.handle_offers(receipt, @offers, @catalog)
-
+  def checks_out_articles_from(cart)
+    receipt = build_receipt(cart)
+    cart.handle_offers(receipt, @offers, @catalog)
     receipt
+  end
+
+  private
+
+  def build_receipt(cart)
+    receipt = Receipt.new
+    cart.items.each do |product_quantity|
+      receipt.add_product(build_receipt_item(product_quantity))
+    end
+    receipt
+  end
+
+  def build_receipt_item(product_quantity)
+    product = product_quantity.product
+    quantity = product_quantity.quantity
+    unit_price = @catalog.unit_price(product)
+    price = quantity * unit_price
+    ReceiptItem.new(product, quantity, unit_price, price)
   end
 end
