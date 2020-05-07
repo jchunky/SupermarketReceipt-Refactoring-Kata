@@ -49,8 +49,8 @@ class ShoppingCart
 
   def x_for_y_discount(product, quantity, unit_price, x:, y:)
     if quantity >= x
-      number_of_x = quantity.to_i / x
-      total = (number_of_x * y * unit_price) + quantity.to_i % x * unit_price
+      number_of_x = quantity / x
+      total = (number_of_x * y * unit_price) + quantity % x * unit_price
       discount_amount = quantity * unit_price - total
       Discount.new(product, "#{x} for #{y}", discount_amount)
     end
@@ -63,8 +63,8 @@ class ShoppingCart
 
   def x_for_amount_discount(product, quantity, unit_price, x:, amount:)
     if quantity >= x
-      number_of_x = quantity.to_i / x
-      total = amount * number_of_x + quantity.to_i % x * unit_price
+      number_of_x = quantity / x
+      total = amount * number_of_x + quantity % x * unit_price
       discount_amount = quantity * unit_price - total
       Discount.new(product, "#{x} for #{amount}", discount_amount)
     end
