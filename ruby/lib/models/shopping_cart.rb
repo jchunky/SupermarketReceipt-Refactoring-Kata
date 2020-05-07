@@ -48,27 +48,23 @@ class ShoppingCart
   end
 
   def x_for_y_discount(product, quantity, unit_price, x:, y:)
-    quantity_as_int = quantity.to_i
-    if quantity >= x
-      number_of_x = quantity_as_int / x
-      total = (number_of_x * y * unit_price) + quantity_as_int % x * unit_price
+      number_of_x = quantity.to_i / x
+      total = (number_of_x * y * unit_price) + quantity.to_i % x * unit_price
       discount_amount = quantity * unit_price - total
       Discount.new(product, "#{x} for #{y}", discount_amount)
     end
   end
 
   def percent_discount(product, quantity, unit_price, percent:)
-    discount = quantity * unit_price * percent / 100.0
-    Discount.new(product, "#{percent}% off", discount)
+    discount_amount = quantity * unit_price * percent / 100.0
+    Discount.new(product, "#{percent}% off", discount_amount)
   end
 
   def x_for_amount_discount(product, quantity, unit_price, x:, amount:)
-    quantity_as_int = quantity.to_i
-    if quantity >= x
-      number_of_x = quantity_as_int / x
-      total = amount * number_of_x + quantity_as_int % x * unit_price
-      discount = unit_price * quantity - total
-      Discount.new(product, "#{x} for #{amount}", discount)
+      number_of_x = quantity.to_i / x
+      total = amount * number_of_x + quantity.to_i % x * unit_price
+      discount_amount = quantity * unit_price - total
+      Discount.new(product, "#{x} for #{amount}", discount_amount)
     end
   end
 end
