@@ -7,7 +7,8 @@ gem "rake"
 gem "rspec"
 gem "rubocop"
 gem "test-unit"
+gem "whats_up"
 
 gem "minitest-reporters"
 # require 'minitest/reporters'
-# Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(color: true)]
+# Minitest::Reporters.use!
