@@ -1,31 +1,27 @@
 class ShoppingCart
-  attr_reader :product_quantities
+  attr_reader :items, :product_quantities
   def initialize
     @items = []
     @product_quantities = {}
   end
 
-  def items
-    Array.new @items
-  end
-
   def add_item(product)
     add_item_quantity(product, 1.0)
-    nil
   end
 
   def add_item_quantity(product, quantity)
-    @items << ProductQuantity.new(product, quantity)
-    product_quantities[product] = if @product_quantities.key?(product)
-                                    product_quantities[product] + quantity
-                                  else
-                                    quantity
-                                  end
+    items << ProductQuantity.new(product, quantity)
+    product_quantities[product] =
+      if product_quantities.key?(product)
+        product_quantities[product] + quantity
+      else
+        quantity
+      end
   end
 
   def handle_offers(receipt, offers, catalog)
-    @product_quantities.each_key do |p|
-      quantity = @product_quantities[p]
+    product_quantities.each_key do |p|
+      quantity = product_quantities[p]
       next unless offers.key?(p)
 
       offer = offers[p]
