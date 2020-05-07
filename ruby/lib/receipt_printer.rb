@@ -17,10 +17,11 @@ class ReceiptPrinter
   private
 
   def item_lines(item)
-    price = format_price(item.total_price)
-    quantity = format_quantity(item)
     product = item.product.name
+    price = format_price(item.total_price)
     unit_price = format_price(item.price)
+    quantity = format_quantity(item)
+
     [
       format_line(product, price),
       ("  #{unit_price} * #{quantity}" if item.quantity != 1),
@@ -28,9 +29,9 @@ class ReceiptPrinter
   end
 
   def discount_lines(discount)
+    description = discount.description
     product = discount.product.name
     discount_amount = format_price(discount.discount_amount)
-    description = discount.description
     format_line("#{description}(#{product})", "-#{discount_amount}")
   end
 
