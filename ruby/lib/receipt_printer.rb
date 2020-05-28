@@ -32,14 +32,15 @@ class ReceiptPrinter
       result.concat("\n")
     end
     result.concat("\n")
-    price_presentation = format_price(receipt.total_price)
-    total = "Total: "
-    whitespace = whitespace(@columns - total.size - price_presentation.size)
-    result.concat(total, whitespace, price_presentation)
+    result << format_line("Total:", format_price(receipt.total_price))
     result
   end
 
   private
+
+  def format_line(left, right)
+    left + right.rjust(@columns - left.size)
+  end
 
   def format_price(price)
     "%.2f" % price
