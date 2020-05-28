@@ -22,14 +22,12 @@ class ReceiptPrinter
       product_presentation = discount.product.name
       price_presentation = format_price(discount.discount_amount)
       description = discount.description
-      result.concat(description)
-      result.concat("(")
-      result.concat(product_presentation)
-      result.concat(")")
-      result.concat(whitespace(@columns - 3 - product_presentation.size - description.size - price_presentation.size))
-      result.concat("-")
-      result.concat(price_presentation)
-      result.concat("\n")
+
+      result << format_line(
+        description + "(" + product_presentation + ")",
+        "-" + price_presentation
+      )
+      result << "\n"
     end
     result.concat("\n")
     result << format_line("Total:", format_price(receipt.total_price))
