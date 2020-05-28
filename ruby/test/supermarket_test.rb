@@ -57,4 +57,33 @@ class SupermarketTest < Minitest::Test
       Total:                             24.37
     EXPECTED_OUTPUT
   end
+
+  def test_fractional_discounts
+    catalog = FakeCatalog.new
+    cart = ShoppingCart.new
+    teller = Teller.new(catalog)
+
+    toothbrush = Product.new("toothbrush", ProductUnit::EACH)
+    catalog.add_product(toothbrush, 0.33)
+    teller.add_special_offer(TEN_PERCENT_DISCOUNT, toothbrush, 20)
+    cart.add_item_quantity(toothbrush, 1)
+
+    toothpaste = Product.new("toothpaste", ProductUnit::EACH)
+    catalog.add_product(toothpaste, 0.33)
+    teller.add_special_offer(TEN_PERCENT_DISCOUNT, toothpaste, 20)
+    cart.add_item_quantity(toothpaste, 1)
+
+    receipt = teller.checks_out_articles_from(cart)
+
+    output = ReceiptPrinter.new.print_receipt(receipt)
+
+    assert_equal <<~EXPECTED_OUTPUT.strip, output
+      toothbrush                          0.33
+      toothpaste                          0.33
+      20% off(toothbrush)                -0.07
+      20% off(toothpaste)                -0.07
+
+      Total:                              0.53
+    EXPECTED_OUTPUT
+  end
 end
