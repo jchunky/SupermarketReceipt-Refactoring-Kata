@@ -43,10 +43,13 @@ class ReceiptPrinter
   end
 
   def format_quantity(item)
-    if ProductUnit::EACH == item.product.unit
+    case item.product.unit
+    when :each
       format("%x", item.quantity)
-    else
+    when :kilo
       format("%.3f", item.quantity)
+    else
+      raise "Unknown item unit: #{item.product.unit}"
     end
   end
 end
