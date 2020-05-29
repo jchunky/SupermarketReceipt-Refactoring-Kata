@@ -17,16 +17,13 @@ class ShoppingCart
   end
 
   def handle_offers(receipt, offers, catalog)
-    @product_quantities.each do |p, quantity|
-      description, discount_amount = get_discount(
-        offers[p],
-        quantity,
-        catalog.unit_price(p)
-      )
-
+    @product_quantities.each do |product, quantity|
+      offer = offers[product]
+      unit_price = catalog.unit_price(product)
+      description, discount_amount = get_discount(offer, quantity, unit_price)
       next unless discount_amount
 
-      discount = Discount.new(p, description, discount_amount)
+      discount = Discount.new(product, description, discount_amount)
       receipt.add_discount(discount)
     end
   end
@@ -38,7 +35,7 @@ class ShoppingCart
     when SpecialOfferType::TEN_PERCENT_DISCOUNT
       percent = offer.argument
       discount_amount = quantity * unit_price * percent / 100.0
-      return ["#{percent}% off", discount_amount]
+      ["#{percent}% off", discount_amount]
     when SpecialOfferType::THREE_FOR_TWO
       quantity_as_int = quantity.to_i
       x = 3
@@ -47,7 +44,7 @@ class ShoppingCart
       if quantity_as_int >= x
         total = (number_of_x * y * unit_price) + quantity_as_int % x * unit_price
         discount_amount = quantity * unit_price - total
-        return ["#{x} for #{y}", discount_amount]
+        ["#{x} for #{y}", discount_amount]
       end
     when SpecialOfferType::TWO_FOR_AMOUNT
       quantity_as_int = quantity.to_i
@@ -57,7 +54,7 @@ class ShoppingCart
       if quantity_as_int >= x
         total = amount * (quantity_as_int / x) + quantity_as_int % x * unit_price
         discount_amount = unit_price * quantity - total
-        return ["#{x} for #{amount}", discount_amount]
+        ["#{x} for #{amount}", discount_amount]
       end
     when SpecialOfferType::FIVE_FOR_AMOUNT
       quantity_as_int = quantity.to_i
@@ -67,9 +64,8 @@ class ShoppingCart
       if quantity_as_int >= x
         total = amount * number_of_x + quantity_as_int % x * unit_price
         discount_amount = unit_price * quantity - total
-        return ["#{x} for #{amount}", discount_amount]
+        ["#{x} for #{amount}", discount_amount]
       end
     end
-    []
   end
 end
