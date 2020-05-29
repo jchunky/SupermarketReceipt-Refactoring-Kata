@@ -41,8 +41,6 @@ class SupermarketTest < Minitest::Test
 
     output = ReceiptPrinter.new.print_receipt(receipt)
 
-    puts output
-
     assert_equal <<~EXPECTED_OUTPUT.strip, output
       toothbrush                          4.95
         0.99 * 5
