@@ -33,9 +33,15 @@ class SupermarketTest < Minitest::Test
     teller.add_special_offer(TWO_FOR_AMOUNT, cherry_tomatoes, 0.99)
     cart.add_item_quantity(cherry_tomatoes, 5)
 
+    bread = Product.new("bread", ProductUnit::EACH)
+    catalog.add_product(bread, 1.79)
+    cart.add_item_quantity(bread, 6)
+
     receipt = teller.checks_out_articles_from(cart)
 
     output = ReceiptPrinter.new.print_receipt(receipt)
+
+    puts output
 
     assert_equal <<~EXPECTED_OUTPUT.strip, output
       toothbrush                          4.95
@@ -48,13 +54,15 @@ class SupermarketTest < Minitest::Test
         1.79 * 6
       cherry tomatoes                     3.45
         0.69 * 5
+      bread                              10.74
+        1.79 * 6
       3 for 2(toothbrush)                -0.99
       20% off(apples)                    -1.00
       10% off(rice)                      -0.50
       5 for 7.49(toothpaste)             -1.46
       2 for 0.99(cherry tomatoes)        -0.78
 
-      Total:                             24.37
+      Total:                             35.11
     EXPECTED_OUTPUT
   end
 
