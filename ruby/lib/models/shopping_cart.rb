@@ -1,9 +1,8 @@
 class ShoppingCart
-  attr_reader :items, :product_quantities
+  attr_reader :items
 
   def initialize
     @items = []
-    @product_quantities = {}
   end
 
   def add_item(product)
@@ -12,8 +11,6 @@ class ShoppingCart
 
   def add_item_quantity(product, quantity)
     items << ProductQuantity.new(product, quantity)
-    product_quantities[product] ||= 0
-    product_quantities[product] += quantity
   end
 
   def handle_offers(receipt, offers, catalog)
@@ -53,7 +50,7 @@ class ShoppingCart
       number_of_x = quantity_as_int / x
       return unless quantity_as_int >= x
 
-      total = amount * (quantity_as_int / x) + quantity_as_int % x * unit_price
+      total = amount * number_of_x + quantity_as_int % x * unit_price
       discount_amount = unit_price * quantity - total
       ["#{x} for #{amount}", discount_amount]
     when SpecialOfferType::FIVE_FOR_AMOUNT
@@ -67,5 +64,9 @@ class ShoppingCart
       discount_amount = unit_price * quantity - total
       ["#{x} for #{amount}", discount_amount]
     end
+  end
+
+  def product_quantities
+    items.group_by(&:product).transform_values { |items| items.sum(&:quantity) }
   end
 end
