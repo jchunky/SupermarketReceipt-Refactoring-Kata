@@ -11,13 +11,13 @@ class ShoppingCart
   end
 
   def add_item_quantity(product, quantity)
-    @items << ProductQuantity.new(product, quantity)
+    items << ProductQuantity.new(product, quantity)
     product_quantities[product] ||= 0
     product_quantities[product] += quantity
   end
 
   def handle_offers(receipt, offers, catalog)
-    @product_quantities.each do |product, quantity|
+    product_quantities.each do |product, quantity|
       offer = offers[product]
       unit_price = catalog.unit_price(product)
       description, discount_amount = get_discount(offer, quantity, unit_price)
