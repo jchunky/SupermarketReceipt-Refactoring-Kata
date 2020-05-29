@@ -4,20 +4,12 @@ class ReceiptPrinter
   end
 
   def print_receipt(receipt)
-    result = ""
-
-    receipt.items.each do |item|
-      result << format_receipt_item(item)
-    end
-
-    receipt.discounts.each do |discount|
-      result << format_discount(discount)
-      result << "\n"
-    end
-
-    result << "\n"
-    result << format_line("Total:", format_price(receipt.total_price))
-    result
+    [
+      receipt.items.map(&method(:format_receipt_item)),
+      receipt.discounts.map(&method(:format_discount)),
+      "",
+      format_line("Total:", format_price(receipt.total_price)),
+    ].join("\n")
   end
 
   private
@@ -25,23 +17,21 @@ class ReceiptPrinter
   def format_receipt_item(item)
     price = format_price(item.total_price)
     quantity = format_quantity(item)
-    name = item.product.name
+    product = item.product.name
     unit_price = format_price(item.price)
 
-    line = format_line(name, price) + "\n"
-    line += "  #{unit_price} * #{quantity}\n" if item.quantity != 1
-    line
+    [
+      format_line(product, price),
+      ("  #{unit_price} * #{quantity}" if item.quantity != 1),
+    ].compact
   end
 
   def format_discount(discount)
     product = discount.product.name
-    price_presentation = format_price(discount.discount_amount)
+    discount_amount = format_price(discount.discount_amount)
     description = discount.description
 
-    format_line(
-      "#{description}(#{product})",
-      "-#{price_presentation}"
-    )
+    format_line("#{description}(#{product})", "-#{discount_amount}")
   end
 
   def format_line(left, right)
