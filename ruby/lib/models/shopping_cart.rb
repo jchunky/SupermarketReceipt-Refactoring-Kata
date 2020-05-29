@@ -31,7 +31,7 @@ class ShoppingCart
     return nil unless offer
 
     case offer.offer_type
-    when :ten_percent_discount
+    when :percent_discount
       percent = offer.argument
       discount_amount = quantity * unit_price * percent / 100.0
       ["#{percent}% off", discount_amount]

@@ -13,12 +13,12 @@ class SupermarketTest < Minitest::Test
 
     apples = Product.new("apples", :kilo)
     catalog.add_product(apples, 1.99)
-    teller.add_special_offer(:ten_percent_discount, apples, 20)
+    teller.add_special_offer(:percent_discount, apples, 20)
     cart.add_item_quantity(apples, 2.5)
 
     rice = Product.new("rice", :each)
     catalog.add_product(rice, 2.49)
-    teller.add_special_offer(:ten_percent_discount, rice, 10)
+    teller.add_special_offer(:percent_discount, rice, 10)
     cart.add_item_quantity(rice, 2)
 
     toothpaste = Product.new("toothpaste", :each)
@@ -69,12 +69,12 @@ class SupermarketTest < Minitest::Test
 
     toothbrush = Product.new("toothbrush", :each)
     catalog.add_product(toothbrush, 0.33)
-    teller.add_special_offer(:ten_percent_discount, toothbrush, 20)
+    teller.add_special_offer(:percent_discount, toothbrush, 20)
     cart.add_item_quantity(toothbrush, 1)
 
     toothpaste = Product.new("toothpaste", :each)
     catalog.add_product(toothpaste, 0.33)
-    teller.add_special_offer(:ten_percent_discount, toothpaste, 20)
+    teller.add_special_offer(:percent_discount, toothpaste, 20)
     cart.add_item_quantity(toothpaste, 1)
 
     receipt = teller.checks_out_articles_from(cart)
