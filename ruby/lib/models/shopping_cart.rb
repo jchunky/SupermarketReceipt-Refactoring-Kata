@@ -48,22 +48,23 @@ class ShoppingCart
       unit_price = catalog.unit_price(p)
       quantity_as_int = quantity.to_i
       x = 3
+      y = 2
       number_of_x = quantity_as_int / x
-      if quantity_as_int > 2
-        total = (number_of_x * 2 * unit_price) + quantity_as_int % 3 * unit_price
+      if quantity_as_int >= x
+        total = (number_of_x * y * unit_price) + quantity_as_int % x * unit_price
         discount_amount = quantity * unit_price - total
-        discount = Discount.new(p, "3 for 2", discount_amount)
+        discount = Discount.new(p, "#{x} for #{y}", discount_amount)
       end
     when SpecialOfferType::TWO_FOR_AMOUNT
       quantity = @product_quantities[p]
       unit_price = catalog.unit_price(p)
       quantity_as_int = quantity.to_i
       x = 2
-      y = offer.argument
-      if quantity_as_int >= 2
-        total = y * (quantity_as_int / x) + quantity_as_int % 2 * unit_price
+      amount = offer.argument
+      if quantity_as_int >= x
+        total = amount * (quantity_as_int / x) + quantity_as_int % x * unit_price
         discount_amount = unit_price * quantity - total
-        discount = Discount.new(p, "2 for #{y}", discount_amount)
+        discount = Discount.new(p, "#{x} for #{amount}", discount_amount)
       end
       number_of_x = quantity_as_int / x
     when SpecialOfferType::FIVE_FOR_AMOUNT
@@ -71,12 +72,12 @@ class ShoppingCart
       unit_price = catalog.unit_price(p)
       quantity_as_int = quantity.to_i
       x = 5
-      y = offer.argument
+      amount = offer.argument
       number_of_x = quantity_as_int / x
-      if quantity_as_int >= 5
-        total = y * number_of_x + quantity_as_int % 5 * unit_price
+      if quantity_as_int >= x
+        total = amount * number_of_x + quantity_as_int % x * unit_price
         discount_amount = unit_price * quantity - total
-        discount = Discount.new(p, "#{x} for #{y}", discount_amount)
+        discount = Discount.new(p, "#{x} for #{amount}", discount_amount)
       end
     end
 
