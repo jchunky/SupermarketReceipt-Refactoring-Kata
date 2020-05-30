@@ -6,7 +6,7 @@ class Teller
   end
 
   def add_item_quantity(product, quantity)
-    @items << ReceiptItem.new(product, quantity, product.unit_price)
+    @items << ReceiptItem.new(product, quantity)
   end
 
   def add_special_offer(offer_type, product, argument)
