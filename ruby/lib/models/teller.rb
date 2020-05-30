@@ -19,14 +19,9 @@ class Teller
     @items.each { |item| receipt.add_receipt_item(item) }
 
     product_quantities.each do |product, quantity|
-      description, discount_amount = DiscountCalculator.get_discount(
-        @offers[product],
-        quantity,
-        product.unit_price
-      )
-      next unless discount_amount
+      discount = find_discount(product, quantity)
+      next unless discount
 
-      discount = Discount.new(product, description, discount_amount)
       receipt.add_discount(discount)
     end
 
@@ -34,6 +29,17 @@ class Teller
   end
 
   private
+
+  def find_discount(product, quantity)
+    description, discount_amount = DiscountCalculator.get_discount(
+      @offers[product],
+      quantity,
+      product.unit_price
+    )
+    return unless discount_amount
+
+    Discount.new(product, description, discount_amount)
+  end
 
   def product_quantities
     @items.group_by(&:product).transform_values do |items|
