@@ -14,15 +14,15 @@ class ReceiptPrinter
 
   private
 
-  def format_receipt_item(receipt_item)
-    price = format_price(receipt_item.total_price)
-    quantity = format_quantity(receipt_item)
-    product = receipt_item.product.name
-    unit_price = format_price(receipt_item.unit_price)
+  def format_receipt_item(item)
+    price = format_price(item.total_price)
+    quantity = format_quantity(item)
+    product = item.product.name
+    unit_price = format_price(item.unit_price)
 
     [
       format_line(product, price),
-      ("  #{unit_price} * #{quantity}" if receipt_item.quantity != 1),
+      ("  #{unit_price} * #{quantity}" if item.quantity != 1),
     ].compact
   end
 
