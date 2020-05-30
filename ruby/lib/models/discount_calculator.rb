@@ -1,6 +1,6 @@
 class DiscountCalculator
-  def self.get_discount(offer, quantity, unit_price)
-    return nil unless offer
+  def self.get_discount(offer, unit_price, quantity)
+    return unless offer
 
     case offer.offer_type
     when :percent_discount
@@ -38,7 +38,7 @@ class DiscountCalculator
       discount_amount = unit_price * quantity - total
       ["#{x} for #{amount}", discount_amount]
     else
-      raise "Unknown offer type: #{offer.offer_type}"
+      raise "Unknown offer type: #{offer_type}"
     end
   end
 end
