@@ -1,1 +1,1 @@
-Product = Struct.new(:name, :unit, :price)
+Product = Struct.new(:name, :unit, :unit_price)

@@ -6,8 +6,7 @@ class Teller
   end
 
   def add_item_quantity(product, quantity)
-    unit_price = @catalog.unit_price(product)
-    @items << ReceiptItem.new(product, quantity, unit_price)
+    @items << ReceiptItem.new(product, quantity, product.unit_price)
   end
 
   def add_special_offer(offer_type, product, argument)
@@ -20,12 +19,10 @@ class Teller
     @items.each { |item| receipt.add_receipt_item(item) }
 
     product_quantities.each do |product, quantity|
-      offer = @offers[product]
-      unit_price = @catalog.unit_price(product)
       description, discount_amount = DiscountCalculator.get_discount(
-        offer,
+        @offers[product],
         quantity,
-        unit_price
+        product.unit_price
       )
       next unless discount_amount
 
