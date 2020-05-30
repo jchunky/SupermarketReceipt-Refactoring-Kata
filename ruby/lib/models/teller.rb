@@ -1,13 +1,13 @@
 class Teller
-  attr_reader :offers, :items
+  attr_reader :offers, :receipt_items
 
   def initialize
     @offers = {}
-    @items = []
+    @receipt_items = []
   end
 
   def add_item_quantity(product, quantity)
-    items << ReceiptItem.new(product, quantity)
+    receipt_items << ReceiptItem.new(product, quantity)
   end
 
   def add_special_offer(offer_type, product, argument)
@@ -15,13 +15,13 @@ class Teller
   end
 
   def receipt
-    Receipt.new(items, discounts)
+    Receipt.new(receipt_items, discounts)
   end
 
   private
 
   def discounts
-    items
+    receipt_items
       .group_by(&:product)
       .transform_values { |items| items.sum(&:quantity) }
       .map(&method(:find_discount))
