@@ -2,36 +2,29 @@ require_relative "./test_helper"
 
 class SupermarketTest < Minitest::Test
   def test_discounts
-    catalog = FakeCatalog.new
-    teller = Teller.new(catalog)
+    teller = Teller.new
 
     toothbrush = Product.new("toothbrush", :each, 0.99)
-    catalog.add_product(toothbrush)
     teller.add_special_offer(:three_for_two, toothbrush, nil)
     teller.add_item_quantity(toothbrush, 5)
 
     apples = Product.new("apples", :kilo, 1.99)
-    catalog.add_product(apples)
     teller.add_special_offer(:percent_discount, apples, 20)
     teller.add_item_quantity(apples, 2.5)
 
     rice = Product.new("rice", :each, 2.49)
-    catalog.add_product(rice)
     teller.add_special_offer(:percent_discount, rice, 10)
     teller.add_item_quantity(rice, 2)
 
     toothpaste = Product.new("toothpaste", :each, 1.79)
-    catalog.add_product(toothpaste)
     teller.add_special_offer(:five_for_amount, toothpaste, 7.49)
     teller.add_item_quantity(toothpaste, 6)
 
     cherry_tomatoes = Product.new("cherry tomatoes", :each, 0.69)
-    catalog.add_product(cherry_tomatoes)
     teller.add_special_offer(:two_for_amount, cherry_tomatoes, 0.99)
     teller.add_item_quantity(cherry_tomatoes, 5)
 
     bread = Product.new("bread", :each, 1.79)
-    catalog.add_product(bread)
     teller.add_item_quantity(bread, 6)
 
     output = ReceiptPrinter.new.print_receipt(teller.receipt)
@@ -60,16 +53,13 @@ class SupermarketTest < Minitest::Test
   end
 
   def test_fractional_discounts
-    catalog = FakeCatalog.new
-    teller = Teller.new(catalog)
+    teller = Teller.new
 
     toothbrush = Product.new("toothbrush", :each, 0.33)
-    catalog.add_product(toothbrush)
     teller.add_special_offer(:percent_discount, toothbrush, 20)
     teller.add_item_quantity(toothbrush, 1)
 
     toothpaste = Product.new("toothpaste", :each, 0.33)
-    catalog.add_product(toothpaste)
     teller.add_special_offer(:percent_discount, toothpaste, 20)
     teller.add_item_quantity(toothpaste, 1)
 

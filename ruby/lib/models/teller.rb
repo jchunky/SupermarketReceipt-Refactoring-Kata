@@ -1,6 +1,5 @@
 class Teller
-  def initialize(catalog)
-    @catalog = catalog
+  def initialize
     @offers = {}
     @items = []
   end
