@@ -29,14 +29,6 @@ class Teller
   end
 
   def find_discount(product, quantity)
-    offer = offers[product]
-    description, discount_amount = DiscountCalculator.get_discount(
-      offer,
-      product.unit_price,
-      quantity
-    )
-    return unless discount_amount
-
-    Discount.new(product, description, discount_amount)
+    DiscountCalculator.get_discount(offers[product], product, quantity)
   end
 end
