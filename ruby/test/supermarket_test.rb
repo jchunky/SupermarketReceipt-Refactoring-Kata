@@ -5,33 +5,33 @@ class SupermarketTest < Minitest::Test
     catalog = FakeCatalog.new
     teller = Teller.new(catalog)
 
-    toothbrush = Product.new("toothbrush", :each)
-    catalog.add_product(toothbrush, 0.99)
+    toothbrush = Product.new("toothbrush", :each, 0.99)
+    catalog.add_product(toothbrush)
     teller.add_special_offer(:three_for_two, toothbrush, nil)
     teller.add_item_quantity(toothbrush, 5)
 
-    apples = Product.new("apples", :kilo)
-    catalog.add_product(apples, 1.99)
+    apples = Product.new("apples", :kilo, 1.99)
+    catalog.add_product(apples)
     teller.add_special_offer(:percent_discount, apples, 20)
     teller.add_item_quantity(apples, 2.5)
 
-    rice = Product.new("rice", :each)
-    catalog.add_product(rice, 2.49)
+    rice = Product.new("rice", :each, 2.49)
+    catalog.add_product(rice)
     teller.add_special_offer(:percent_discount, rice, 10)
     teller.add_item_quantity(rice, 2)
 
-    toothpaste = Product.new("toothpaste", :each)
-    catalog.add_product(toothpaste, 1.79)
+    toothpaste = Product.new("toothpaste", :each, 1.79)
+    catalog.add_product(toothpaste)
     teller.add_special_offer(:five_for_amount, toothpaste, 7.49)
     teller.add_item_quantity(toothpaste, 6)
 
-    cherry_tomatoes = Product.new("cherry tomatoes", :each)
-    catalog.add_product(cherry_tomatoes, 0.69)
+    cherry_tomatoes = Product.new("cherry tomatoes", :each, 0.69)
+    catalog.add_product(cherry_tomatoes)
     teller.add_special_offer(:two_for_amount, cherry_tomatoes, 0.99)
     teller.add_item_quantity(cherry_tomatoes, 5)
 
-    bread = Product.new("bread", :each)
-    catalog.add_product(bread, 1.79)
+    bread = Product.new("bread", :each, 1.79)
+    catalog.add_product(bread)
     teller.add_item_quantity(bread, 6)
 
     output = ReceiptPrinter.new.print_receipt(teller.receipt)
@@ -63,13 +63,13 @@ class SupermarketTest < Minitest::Test
     catalog = FakeCatalog.new
     teller = Teller.new(catalog)
 
-    toothbrush = Product.new("toothbrush", :each)
-    catalog.add_product(toothbrush, 0.33)
+    toothbrush = Product.new("toothbrush", :each, 0.33)
+    catalog.add_product(toothbrush)
     teller.add_special_offer(:percent_discount, toothbrush, 20)
     teller.add_item_quantity(toothbrush, 1)
 
-    toothpaste = Product.new("toothpaste", :each)
-    catalog.add_product(toothpaste, 0.33)
+    toothpaste = Product.new("toothpaste", :each, 0.33)
+    catalog.add_product(toothpaste)
     teller.add_special_offer(:percent_discount, toothpaste, 20)
     teller.add_item_quantity(toothpaste, 1)
 

@@ -6,7 +6,8 @@ class Teller
   end
 
   def add_item_quantity(product, quantity)
-    @items << ProductQuantity.new(product, quantity)
+    unit_price = @catalog.unit_price(product)
+    @items << ReceiptItem.new(product, quantity, unit_price)
   end
 
   def add_special_offer(offer_type, product, argument)
@@ -16,9 +17,7 @@ class Teller
   def receipt
     receipt = Receipt.new
 
-    @items.each do |product_quantity|
-      receipt.add_receipt_item(build_receipt_item(product_quantity))
-    end
+    @items.each { |item| receipt.add_receipt_item(item) }
 
     product_quantities.each do |product, quantity|
       offer = @offers[product]
@@ -38,14 +37,6 @@ class Teller
   end
 
   private
-
-  def build_receipt_item(product_quantity)
-    product = product_quantity.product
-    quantity = product_quantity.quantity
-    unit_price = @catalog.unit_price(product)
-
-    ReceiptItem.new(product, quantity, unit_price)
-  end
 
   def product_quantities
     @items.group_by(&:product).transform_values do |items|
