@@ -29,6 +29,6 @@ class Teller
   end
 
   def find_discount(product, quantity)
-    DiscountCalculator.get_discount(offers[product], product, quantity)
+    DiscountCalculator.get_discount(offers[product], quantity)
   end
 end
