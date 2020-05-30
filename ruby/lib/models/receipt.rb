@@ -10,7 +10,7 @@ class Receipt
     items.sum(&:total_price) - discounts.sum(&:discount_amount)
   end
 
-  def add_product(receipt_item)
+  def add_receipt_item(receipt_item)
     items << receipt_item
   end
 

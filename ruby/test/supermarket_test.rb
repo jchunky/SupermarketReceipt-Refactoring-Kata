@@ -3,41 +3,38 @@ require_relative "./test_helper"
 class SupermarketTest < Minitest::Test
   def test_discounts
     catalog = FakeCatalog.new
-    cart = ShoppingCart.new
     teller = Teller.new(catalog)
 
     toothbrush = Product.new("toothbrush", :each)
     catalog.add_product(toothbrush, 0.99)
     teller.add_special_offer(:three_for_two, toothbrush, nil)
-    cart.add_item_quantity(toothbrush, 5)
+    teller.add_item_quantity(toothbrush, 5)
 
     apples = Product.new("apples", :kilo)
     catalog.add_product(apples, 1.99)
     teller.add_special_offer(:percent_discount, apples, 20)
-    cart.add_item_quantity(apples, 2.5)
+    teller.add_item_quantity(apples, 2.5)
 
     rice = Product.new("rice", :each)
     catalog.add_product(rice, 2.49)
     teller.add_special_offer(:percent_discount, rice, 10)
-    cart.add_item_quantity(rice, 2)
+    teller.add_item_quantity(rice, 2)
 
     toothpaste = Product.new("toothpaste", :each)
     catalog.add_product(toothpaste, 1.79)
     teller.add_special_offer(:five_for_amount, toothpaste, 7.49)
-    cart.add_item_quantity(toothpaste, 6)
+    teller.add_item_quantity(toothpaste, 6)
 
     cherry_tomatoes = Product.new("cherry tomatoes", :each)
     catalog.add_product(cherry_tomatoes, 0.69)
     teller.add_special_offer(:two_for_amount, cherry_tomatoes, 0.99)
-    cart.add_item_quantity(cherry_tomatoes, 5)
+    teller.add_item_quantity(cherry_tomatoes, 5)
 
     bread = Product.new("bread", :each)
     catalog.add_product(bread, 1.79)
-    cart.add_item_quantity(bread, 6)
+    teller.add_item_quantity(bread, 6)
 
-    receipt = teller.checks_out_articles_from(cart)
-
-    output = ReceiptPrinter.new.print_receipt(receipt)
+    output = ReceiptPrinter.new.print_receipt(teller.receipt)
 
     assert_equal <<~EXPECTED_OUTPUT.strip, output
       toothbrush                          4.95
@@ -64,22 +61,19 @@ class SupermarketTest < Minitest::Test
 
   def test_fractional_discounts
     catalog = FakeCatalog.new
-    cart = ShoppingCart.new
     teller = Teller.new(catalog)
 
     toothbrush = Product.new("toothbrush", :each)
     catalog.add_product(toothbrush, 0.33)
     teller.add_special_offer(:percent_discount, toothbrush, 20)
-    cart.add_item_quantity(toothbrush, 1)
+    teller.add_item_quantity(toothbrush, 1)
 
     toothpaste = Product.new("toothpaste", :each)
     catalog.add_product(toothpaste, 0.33)
     teller.add_special_offer(:percent_discount, toothpaste, 20)
-    cart.add_item_quantity(toothpaste, 1)
+    teller.add_item_quantity(toothpaste, 1)
 
-    receipt = teller.checks_out_articles_from(cart)
-
-    output = ReceiptPrinter.new.print_receipt(receipt)
+    output = ReceiptPrinter.new.print_receipt(teller.receipt)
 
     assert_equal <<~EXPECTED_OUTPUT.strip, output
       toothbrush                          0.33
