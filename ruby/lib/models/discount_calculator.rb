@@ -43,6 +43,6 @@ class DiscountCalculator
       raise "Unknown offer type: #{offer_type}"
     end
 
-    Discount.new(offer.product, description, discount_amount.round(2))
+    Discount.new(offer.product, description, discount_amount)
   end
 end
