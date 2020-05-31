@@ -58,7 +58,7 @@ class SupermarketTest < Minitest::Test
     EXPECTED_OUTPUT
   end
 
-  def test_fractional_discounts
+  def test_total_is_sum_of_line_items
     catalog = FakeCatalog.new
     cart = ShoppingCart.new
     teller = Teller.new(catalog)
@@ -85,5 +85,30 @@ class SupermarketTest < Minitest::Test
 
       Total:                              0.53
     EXPECTED_OUTPUT
+
+    # NOTE: Total should be 0.52
+  end
+
+  def test_no_floating_point_rounding_errors
+    catalog = FakeCatalog.new
+    cart = ShoppingCart.new
+    teller = Teller.new(catalog)
+
+    apples = Product.new("apples", ProductUnit::KILO)
+    catalog.add_product(apples, 1.00)
+    cart.add_item_quantity(apples, 1.005)
+
+    receipt = teller.checks_out_articles_from(cart)
+
+    output = ReceiptPrinter.new.print_receipt(receipt)
+
+    assert_equal <<~EXPECTED_OUTPUT.strip, output
+      apples                              1.00
+        1.00 * 1.005
+
+      Total:                              1.00
+    EXPECTED_OUTPUT
+
+    # NOTE: Total should be 1.01
   end
 end
