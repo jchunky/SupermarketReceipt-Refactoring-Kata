@@ -52,7 +52,7 @@ class SupermarketTest < Minitest::Test
     EXPECTED_OUTPUT
   end
 
-  def test_fractional_discounts
+  def test_total_is_sum_of_line_items
     teller = Teller.new
 
     toothbrush = Product.new("toothbrush", :each, 0.33)
@@ -72,6 +72,24 @@ class SupermarketTest < Minitest::Test
       20% off(toothpaste)                -0.07
 
       Total:                              0.52
+    EXPECTED_OUTPUT
+  end
+
+  def test_no_floating_point_rounding_errors
+    teller = Teller.new
+
+    apples = Product.new("apples", :kilo, 1.00)
+    teller.add_item_quantity(apples, 1.005)
+
+    output = ReceiptPrinter.new.print_receipt(teller.receipt)
+    puts output
+
+    assert_equal <<~EXPECTED_OUTPUT.strip, output
+      apples                              1.01
+        1.00 * 1.005
+
+
+      Total:                              1.01
     EXPECTED_OUTPUT
   end
 end
