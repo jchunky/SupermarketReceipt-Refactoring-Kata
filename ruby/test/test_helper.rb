@@ -1,5 +1,7 @@
 require "minitest/autorun"
 require "minitest/reporters"
+require "bigdecimal"
+require "bigdecimal/util"
 
 Minitest::Reporters.use!
 

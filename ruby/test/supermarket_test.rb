@@ -71,7 +71,7 @@ class SupermarketTest < Minitest::Test
       20% off(toothbrush)                -0.07
       20% off(toothpaste)                -0.07
 
-      Total:                              0.53
+      Total:                              0.52
     EXPECTED_OUTPUT
   end
 end
