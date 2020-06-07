@@ -1,14 +1,19 @@
 source "https://rubygems.org"
 
+# production
 gem "activesupport"
+
+# development
 gem "guard"
-gem "minitest"
 gem "rake"
-gem "rspec"
-gem "rubocop"
-gem "test-unit"
 gem "whats_up"
 
+# test
+gem "minitest"
+gem "rspec"
+gem "test-unit"
+
+# minitest
 gem "minitest-reporters"
 # require 'minitest/reporters'
 # Minitest::Reporters.use!
