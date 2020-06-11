@@ -42,25 +42,29 @@ class ShoppingCart
       x = 3
       number_of_x = quantity_as_int / x
       if  quantity_as_int > 2
-        discount_amount = quantity * unit_price - ((number_of_x * 2 * unit_price) + quantity_as_int % 3 * unit_price)
-        discount = Discount.new(p, "3 for 2", discount_amount)
+        total = ((number_of_x * 2 * unit_price) + quantity_as_int % 3 * unit_price)
+        discount_total = quantity * unit_price - total
+        discount = Discount.new(p, "3 for 2", discount_total)
       end
     when SpecialOfferType::TEN_PERCENT_DISCOUNT
       quantity = @product_quantities[p]
       unit_price = catalog.unit_price(p)
-      quantity_as_int = quantity.to_i
-      x = 1
-      number_of_x = quantity_as_int / x
-      discount = Discount.new(p, offer.argument.to_s + "% off", quantity * unit_price * offer.argument / 100.0 )
+      discount_percentage = offer.argument
+      discount_description = "#{discount_percentage}% off"
+      total = discount_percentage / 100.0
+      discount_total = quantity * unit_price * total
+      discount = Discount.new(p, discount_description, discount_total)
     when SpecialOfferType::TWO_FOR_AMOUNT
       quantity = @product_quantities[p]
       unit_price = catalog.unit_price(p)
       quantity_as_int = quantity.to_i
       x = 2
+      y = offer.argument
       if quantity_as_int >= 2
         total = offer.argument * (quantity_as_int / x) + quantity_as_int % 2 * unit_price
-        discount_n = unit_price * quantity - total
-        discount = Discount.new(p, "2 for " + offer.argument.to_s, discount_n)
+        discount_total = unit_price * quantity - total
+        discount_description = "#{x} for #{y}"
+        discount = Discount.new(p, discount_description, discount_total)
       end
 
       number_of_x = quantity_as_int / x
@@ -69,10 +73,13 @@ class ShoppingCart
       unit_price = catalog.unit_price(p)
       quantity_as_int = quantity.to_i
       x = 5
+      y = offer.argument
       number_of_x = quantity_as_int / x
       if quantity_as_int >= 5
-        discount_total = unit_price * quantity - (offer.argument * number_of_x + quantity_as_int % 5 * unit_price)
-        discount = Discount.new(p, x.to_s + " for " + offer.argument.to_s, discount_total)
+        total = (offer.argument * number_of_x + quantity_as_int % 5 * unit_price)
+        discount_total = unit_price * quantity - total
+        discount_description = "#{x} for #{y}"
+        discount = Discount.new(p, discount_description, discount_total)
       end
     end
 
