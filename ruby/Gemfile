@@ -6,6 +6,7 @@ gem "activesupport"
 # development
 gem "guard"
 gem "rake"
+gem "rubocop"
 gem "whats_up"
 
 # test
