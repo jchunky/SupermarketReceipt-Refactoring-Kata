@@ -5,49 +5,55 @@ class ReceiptPrinter
 
   def print_receipt(receipt)
     result = ""
-    receipt.items.each do |item|
-      price = "%.2f" % item.total_price
-      quantity = self.class.present_quantity(item)
-      name = item.product.name
-      unit_price = "%.2f" % item.price
-
-      whitespace_size = @columns - name.size - price.size
-      line = name + self.class.whitespace(whitespace_size) + price + "\n"
-
-      line += "  " + unit_price + " * " + quantity + "\n" if item.quantity != 1
-
-      result.concat(line)
-    end
+    result << receipt.items.map(&method(:format_receipt_item)).join
     receipt.discounts.each do |discount|
-      product_presentation = discount.product.name
-      price_presentation = "%.2f" % discount.discount_amount
-      description = discount.description
-      result.concat(description)
-      result.concat("(")
-      result.concat(product_presentation)
-      result.concat(")")
-      result.concat(self.class.whitespace(@columns - 3 - product_presentation.size - description.size - price_presentation.size))
-      result.concat("-")
-      result.concat(price_presentation)
-      result.concat("\n")
+      result << format_discount(discount)
+      result << "\n"
     end
-    result.concat("\n")
-    price_presentation = "%.2f" % receipt.total_price.to_f
+    result << "\n"
+    price = format_price(receipt.total_price)
     total = "Total: "
-    whitespace = self.class.whitespace(@columns - total.size - price_presentation.size)
-    result.concat(total, whitespace, price_presentation)
+    result << format_line(total, price)
+
     result.to_s
   end
 
-  def self.present_quantity(item)
-    ProductUnit::EACH == item.product.unit ? "%x" % item.quantity.to_i : "%.3f" % item.quantity
+  def format_receipt_item(item)
+    price = format_price(item.total_price)
+    quantity = format_quantity(item)
+    name = item.product.name
+    unit_price = format_price(item.price)
+
+    line = format_line(name, price)
+    line << "\n"
+
+    line += "  " + unit_price + " * " + quantity + "\n" if item.quantity != 1
+    line
   end
 
-  def self.whitespace(whitespace_size)
-    whitespace = ""
-    whitespace_size.times do
-      whitespace.concat(" ")
+  def format_discount(discount)
+    product = discount.product.name
+    price = format_price(discount.discount_amount)
+    description = discount.description
+    format_line("#{description}(#{product})", "-#{price}")
+  end
+
+  def format_line(left, right)
+    left + right.rjust(@columns - left.size)
+  end
+
+  def format_price(price)
+    format("%.2f", price)
+  end
+
+  def format_quantity(item)
+    case item.product.unit
+    when ProductUnit::EACH
+      format("%x", item.quantity.to_i)
+    when ProductUnit::KILO
+      format("%.3f", item.quantity)
+    else
+      raise "Unhandled ProductUnit: #{item.product.unit}"
     end
-    whitespace
   end
 end
