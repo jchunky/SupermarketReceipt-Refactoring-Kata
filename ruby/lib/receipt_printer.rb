@@ -6,10 +6,9 @@ class ReceiptPrinter
   def print_receipt(receipt)
     result = ""
     result << receipt.items.map(&method(:format_receipt_item)).join
-    receipt.discounts.each do |discount|
-      result << format_discount(discount)
-      result << "\n"
-    end
+    result << receipt.discounts.map do |discount|
+      format_discount(discount) + "\n"
+    end.join
     result << "\n"
     price = format_price(receipt.total_price)
     total = "Total: "
