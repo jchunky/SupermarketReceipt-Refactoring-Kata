@@ -13,54 +13,74 @@ class ShoppingCart
   end
 
   def handle_offers(receipt, offers, catalog)
-    @product_quantities.each_key do |p|
-      quantity = @product_quantities[p]
-      next unless offers.key?(p)
+    @product_quantities
+      .select { |product, _| offers.key?(product) }
+      .map { |product, quantity| calculate_discount(offers[product], catalog, product, quantity) }
+      .compact
+      .each { |discount| receipt.add_discount(discount) }
+  end
 
-      offer = offers[p]
-      unit_price = catalog.unit_price(p)
-      quantity_as_int = quantity.to_i
-      discount = nil
-      x = 1
-      if offer.offer_type == SpecialOfferType::THREE_FOR_TWO
-        x = 3
-
-      elsif offer.offer_type == SpecialOfferType::TWO_FOR_AMOUNT
-        x = 2
-        if quantity_as_int >= 2
-          total = offer.argument * (quantity_as_int / x) + quantity_as_int % 2 * unit_price
-          discount_n = unit_price * quantity - total
-          discount = Discount.new(
-            p,
-            "2 for " + offer.argument.to_s,
-            discount_n
-          )
-        end
-
-      end
-      x = 5 if offer.offer_type == SpecialOfferType::FIVE_FOR_AMOUNT
-      number_of_x = quantity_as_int / x
-      if offer.offer_type == SpecialOfferType::THREE_FOR_TWO && quantity_as_int > 2
-        discount_amount = quantity * unit_price - ((number_of_x * 2 * unit_price) + quantity_as_int % 3 * unit_price)
-        discount = Discount.new(p, "3 for 2", discount_amount)
-      end
-      if offer.offer_type == SpecialOfferType::TEN_PERCENT_DISCOUNT
-        discount = Discount.new(
-          p,
-          offer.argument.to_s + "% off",
-          quantity * unit_price * offer.argument / 100.0
-        )
-      end
-      if offer.offer_type == SpecialOfferType::FIVE_FOR_AMOUNT && quantity_as_int >= 5
-        discount_total = unit_price * quantity - (offer.argument * number_of_x + quantity_as_int % 5 * unit_price)
-        discount = Discount.new(
-          p,
-          x.to_s + " for " + offer.argument.to_s,
-          discount_total
-        )
-      end
-
-      receipt.add_discount(discount) if discount
+  def calculate_discount(offer, catalog, p, quantity)
+    case offer.offer_type
+    when SpecialOfferType::PERCENT_DISCOUNT
+      percent_discount(offer, catalog, p, quantity)
+    when SpecialOfferType::THREE_FOR_TWO
+      buy_2_get_1_free(offer, catalog, p, quantity)
+    when SpecialOfferType::TWO_FOR_AMOUNT
+      buy_x_quantity_for_fixed_price(offer, catalog, p, quantity, 2)
+    when SpecialOfferType::FIVE_FOR_AMOUNT
+      buy_x_quantity_for_fixed_price(offer, catalog, p, quantity, 5)
+    else
+      raise "Unexpected offer type: #{offer.offer_type}"
     end
+  end
+
+  def percent_discount(offer, catalog, p, quantity)
+    unit_price = catalog.unit_price(p)
+
+    discount_percentage = offer.argument
+
+    discount_amount = quantity * unit_price * offer.argument / 100.0
+
+    Discount.new(p, "#{discount_percentage}% off", discount_amount)
+  end
+
+  def buy_2_get_1_free(_offer, catalog, p, quantity)
+    discount_divisor = 3
+    return nil if quantity < discount_divisor
+
+    unit_price = catalog.unit_price(p)
+    discount_price = unit_price * 2
+
+    number_of_discounts = quantity.to_i / discount_divisor
+    number_of_fullprice_items = quantity.to_i % discount_divisor
+
+    total_price_for_discounted_items = discount_price * number_of_discounts
+    total_price_for_nondiscounted_items = unit_price * number_of_fullprice_items
+
+    total = total_price_for_discounted_items + total_price_for_nondiscounted_items
+
+    discount_amount = unit_price * quantity - total
+
+    Discount.new(p, "#{discount_divisor} for 2", discount_amount)
+  end
+
+  def buy_x_quantity_for_fixed_price(offer, catalog, p, quantity, discount_divisor)
+    return nil if quantity < discount_divisor
+
+    unit_price = catalog.unit_price(p)
+    discount_price = offer.argument
+
+    number_of_discounts = quantity.to_i / discount_divisor
+    number_of_fullprice_items = quantity.to_i % discount_divisor
+
+    total_price_for_discounted_items = discount_price * number_of_discounts
+    total_price_for_nondiscounted_items = unit_price * number_of_fullprice_items
+
+    total = total_price_for_discounted_items + total_price_for_nondiscounted_items
+
+    discount_amount = unit_price * quantity - total
+
+    Discount.new(p, "#{discount_divisor} for #{discount_price}", discount_amount)
   end
 end
