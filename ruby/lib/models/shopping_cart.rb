@@ -15,29 +15,27 @@ class ShoppingCart
   def handle_offers(receipt, offers, catalog)
     @product_quantities
       .select { |product, _| offers.key?(product) }
-      .map { |product, quantity| calculate_discount(offers[product], catalog, product, quantity) }
+      .map { |product, quantity| calculate_discount(offers[product], catalog.unit_price(product), product, quantity) }
       .compact
       .each { |discount| receipt.add_discount(discount) }
   end
 
-  def calculate_discount(offer, catalog, p, quantity)
+  def calculate_discount(offer, unit_price, p, quantity)
     case offer.offer_type
     when SpecialOfferType::PERCENT_DISCOUNT
-      percent_discount(offer, catalog, p, quantity)
+      percent_discount(offer, unit_price, p, quantity)
     when SpecialOfferType::THREE_FOR_TWO
-      buy_2_get_1_free(offer, catalog, p, quantity)
+      buy_2_get_1_free(offer, unit_price, p, quantity)
     when SpecialOfferType::TWO_FOR_AMOUNT
-      buy_x_quantity_for_fixed_price(offer, catalog, p, quantity, 2)
+      buy_x_quantity_for_fixed_price(offer, unit_price, p, quantity, 2)
     when SpecialOfferType::FIVE_FOR_AMOUNT
-      buy_x_quantity_for_fixed_price(offer, catalog, p, quantity, 5)
+      buy_x_quantity_for_fixed_price(offer, unit_price, p, quantity, 5)
     else
       raise "Unexpected offer type: #{offer.offer_type}"
     end
   end
 
-  def percent_discount(offer, catalog, p, quantity)
-    unit_price = catalog.unit_price(p)
-
+  def percent_discount(offer, unit_price, p, quantity)
     discount_percentage = offer.argument
 
     discount_amount = quantity * unit_price * offer.argument / 100.0
@@ -45,11 +43,10 @@ class ShoppingCart
     Discount.new(p, "#{discount_percentage}% off", discount_amount)
   end
 
-  def buy_2_get_1_free(_offer, catalog, p, quantity)
+  def buy_2_get_1_free(_offer, unit_price, p, quantity)
     discount_divisor = 3
     return nil if quantity < discount_divisor
 
-    unit_price = catalog.unit_price(p)
     discount_price = unit_price * 2
 
     number_of_discounts = quantity.to_i / discount_divisor
@@ -65,10 +62,9 @@ class ShoppingCart
     Discount.new(p, "#{discount_divisor} for 2", discount_amount)
   end
 
-  def buy_x_quantity_for_fixed_price(offer, catalog, p, quantity, discount_divisor)
+  def buy_x_quantity_for_fixed_price(offer, unit_price, p, quantity, discount_divisor)
     return nil if quantity < discount_divisor
 
-    unit_price = catalog.unit_price(p)
     discount_price = offer.argument
 
     number_of_discounts = quantity.to_i / discount_divisor
