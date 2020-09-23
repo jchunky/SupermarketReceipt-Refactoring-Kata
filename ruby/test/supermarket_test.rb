@@ -33,7 +33,7 @@ class SupermarketTest < Minitest::Test
     teller.add_special_offer(TWO_FOR_AMOUNT, cherry_tomatoes, 0.99)
     cart.add_item_quantity(cherry_tomatoes, 5)
 
-    receipt = teller.checks_out_articles_from(cart)
+    receipt = teller.checks_out_items_from(cart)
 
     output = ReceiptPrinter.new.print_receipt(receipt)
 
@@ -73,7 +73,7 @@ class SupermarketTest < Minitest::Test
     teller.add_special_offer(PERCENT_DISCOUNT, toothpaste, 20)
     cart.add_item_quantity(toothpaste, 1)
 
-    receipt = teller.checks_out_articles_from(cart)
+    receipt = teller.checks_out_items_from(cart)
 
     output = ReceiptPrinter.new.print_receipt(receipt)
 
@@ -98,7 +98,7 @@ class SupermarketTest < Minitest::Test
     catalog.add_product(apples, 1.00)
     cart.add_item_quantity(apples, 1.005)
 
-    receipt = teller.checks_out_articles_from(cart)
+    receipt = teller.checks_out_items_from(cart)
 
     output = ReceiptPrinter.new.print_receipt(receipt)
 
