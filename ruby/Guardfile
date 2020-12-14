@@ -13,7 +13,7 @@ ignore(/Gemfile.lock/)
 ignore(/node_modules/)
 
 def print_line(character)
-  puts "\n" + character * 80 + "\n"
+  puts "\n#{character * 80}\n"
 end
 
 watch(/.*\.rb/) do |match|
@@ -21,7 +21,7 @@ watch(/.*\.rb/) do |match|
   print_line("=")
   path = match[0]
   puts "Processing file: #{path}..."
-  system "rubocop --auto-correct #{path}"
+  system "rubocop -A #{path}"
   print_line("-")
   system "ruby test/*_test.rb"
   print_line("-")
