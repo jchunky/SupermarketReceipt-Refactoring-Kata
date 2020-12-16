@@ -13,18 +13,19 @@ class ShoppingCart
     items << ProductQuantity.new(product, quantity)
   end
 
-  def product_quantities
-    @product_quantities ||= items.group_by(&:product).transform_values { |pq| pq.sum(&:quantity) }
+  def handle_offers(receipt, offers, catalog)
+    product_quantities
+      .keys
+      .select { |p| offers.key?(p) }
+      .map { |p| calculate_discount(offers, catalog, p) }
+      .compact
+      .each { |discount| receipt.add_discount(discount) }
   end
 
-  def handle_offers(receipt, offers, catalog)
-    product_quantities.each_key do |p|
-      next unless offers.key?(p)
+  private
 
-      discount = calculate_discount(offers, catalog, p)
-
-      receipt.add_discount(discount) if discount
-    end
+  def product_quantities
+    @product_quantities ||= items.group_by(&:product).transform_values { |pq| pq.sum(&:quantity) }
   end
 
   def calculate_discount(offers, catalog, p)
