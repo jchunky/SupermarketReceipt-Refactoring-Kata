@@ -24,10 +24,6 @@ class ShoppingCart
 
   private
 
-  def product_quantities
-    @product_quantities ||= items.group_by(&:product).transform_values { |pq| pq.sum(&:quantity) }
-  end
-
   def calculate_discount(offers, catalog, p)
     offer = offers[p]
     quantity = product_quantities[p]
@@ -64,5 +60,9 @@ class ShoppingCart
       discount_amount = regular_price * discount_percentage / 100.0
       Discount.new(p, "#{discount_percentage}% off", discount_amount)
     end
+  end
+
+  def product_quantities
+    @product_quantities ||= items.group_by(&:product).transform_values { |pq| pq.sum(&:quantity) }
   end
 end
