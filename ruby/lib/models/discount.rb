@@ -1,9 +1,2 @@
-class Discount
-  attr_reader :product, :description, :discount_amount
-
-  def initialize(product, description, discount_amount)
-    @product = product
-    @description = description
-    @discount_amount = discount_amount
-  end
+class Discount < Struct.new(:product, :description, :discount_amount)
 end
