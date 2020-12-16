@@ -16,6 +16,8 @@ class Teller
       quantity = pq.quantity
       unit_price = @catalog.unit_price(p)
       price = quantity * unit_price
+      ri = ReceiptItem.new(p, quantity, unit_price, price)
+      # receipt.add_product(ri)
       receipt.add_product(p, quantity, unit_price, price)
     end
     the_cart.handle_offers(receipt, @offers, @catalog)
