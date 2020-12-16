@@ -1,30 +1,23 @@
 class ShoppingCart
-  attr_reader :product_quantities
+  attr_reader :items, :product_quantities
+
   def initialize
     @items = []
     @product_quantities = {}
   end
 
-  def items
-    Array.new @items
-  end
-
   def add_item(product)
     add_item_quantity(product, 1.0)
-    nil
   end
 
   def add_item_quantity(product, quantity)
-    @items << ProductQuantity.new(product, quantity)
-    product_quantities[product] = if @product_quantities.key?(product)
-                                    product_quantities[product] + quantity
-                                  else
-                                    quantity
-                                  end
+    items << ProductQuantity.new(product, quantity)
+    product_quantities[product] ||= 0
+    product_quantities[product] += quantity
   end
 
   def handle_offers(receipt, offers, catalog)
-    @product_quantities.each_key do |p|
+    product_quantities.each_key do |p|
       quantity = @product_quantities[p]
       next unless offers.key?(p)
 
@@ -33,17 +26,18 @@ class ShoppingCart
       quantity_as_int = quantity.to_i
       discount = nil
       x = 1
-      if offer.offer_type == SpecialOfferType::THREE_FOR_TWO
+      case offer.offer_type
+      when SpecialOfferType::THREE_FOR_TWO
         x = 3
 
-      elsif offer.offer_type == SpecialOfferType::TWO_FOR_AMOUNT
+      when SpecialOfferType::TWO_FOR_AMOUNT
         x = 2
         if quantity_as_int >= 2
           total = offer.argument * (quantity_as_int / x) + quantity_as_int % 2 * unit_price
           discount_n = unit_price * quantity - total
           discount = Discount.new(
             p,
-            "2 for " + offer.argument.to_s,
+            "2 for #{offer.argument}",
             discount_n
           )
         end
@@ -58,7 +52,7 @@ class ShoppingCart
       if offer.offer_type == SpecialOfferType::TEN_PERCENT_DISCOUNT
         discount = Discount.new(
           p,
-          offer.argument.to_s + "% off",
+          "#{offer.argument}% off",
           quantity * unit_price * offer.argument / 100.0
         )
       end
@@ -66,7 +60,7 @@ class ShoppingCart
         discount_total = unit_price * quantity - (offer.argument * number_of_x + quantity_as_int % 5 * unit_price)
         discount = Discount.new(
           p,
-          x.to_s + " for " + offer.argument.to_s,
+          "#{x} for #{offer.argument}",
           discount_total
         )
       end
