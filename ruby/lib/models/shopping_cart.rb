@@ -31,35 +31,31 @@ class ShoppingCart
     offer = offers[p]
     quantity = product_quantities[p]
     unit_price = catalog.unit_price(p)
-    quantity_as_int = quantity.to_i
     regular_price = quantity * unit_price
 
     case offer.offer_type
     when SpecialOfferType::THREE_FOR_TWO
       x = 3
       y = 2
-      number_of_x = quantity_as_int / x
-      return unless quantity_as_int >= x
+      return unless quantity >= x
 
-      total = number_of_x * y * unit_price + quantity_as_int % x * unit_price
+      total = (quantity / x * y + quantity % x) * unit_price
       discount_amount = regular_price - total
       Discount.new(p, "#{x} for #{y}", discount_amount)
     when SpecialOfferType::TWO_FOR_AMOUNT
       x = 2
       y = offer.argument
-      number_of_x = quantity_as_int / x
-      return unless quantity_as_int >= x
+      return unless quantity >= x
 
-      total = number_of_x * y + quantity_as_int % x * unit_price
+      total = quantity / x * y + quantity % x * unit_price
       discount_amount = regular_price - total
       Discount.new(p, "#{x} for #{y}", discount_amount)
     when SpecialOfferType::FIVE_FOR_AMOUNT
       x = 5
       y = offer.argument
-      number_of_x = quantity_as_int / x
-      return unless quantity_as_int >= x
+      return unless quantity >= x
 
-      total = number_of_x * y + quantity_as_int % x * unit_price
+      total = quantity / x * y + quantity % x * unit_price
       discount_amount = regular_price - total
       Discount.new(p, "#{x} for #{y}", discount_amount)
     when SpecialOfferType::TEN_PERCENT_DISCOUNT
