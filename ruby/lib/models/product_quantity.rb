@@ -1,8 +1,2 @@
-class ProductQuantity
-  attr_reader :product, :quantity
-
-  def initialize(product, weight)
-    @product = product
-    @quantity = weight
-  end
+class ProductQuantity < Struct.new(:product, :quantity)
 end
