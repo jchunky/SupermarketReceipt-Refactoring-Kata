@@ -9,8 +9,7 @@ Layout/ExtraSpacing:
 Layout/HeredocArgumentClosingParenthesis:
   Enabled: true
 Style/BlockDelimiters:
-  EnforcedStyle: semantic
-  AllowBracesOnProceduralOneLiners: true
+  EnforcedStyle: always_braces
 Style/CollectionMethods:
   Enabled: true
 Style/StringLiterals:
