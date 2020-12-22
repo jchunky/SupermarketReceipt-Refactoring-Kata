@@ -8,8 +8,6 @@ Layout/ExtraSpacing:
   AllowForAlignment: false
 Layout/HeredocArgumentClosingParenthesis:
   Enabled: true
-Style/BlockDelimiters:
-  EnforcedStyle: always_braces
 Style/CollectionMethods:
   Enabled: true
 Style/StringLiterals:
